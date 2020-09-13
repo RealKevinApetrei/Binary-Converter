@@ -54,7 +54,7 @@ class BinaryToText(Application): # Binary To Text Window
         self.binary_box = tk.Text(self, height=5, width=50)
         self.binary_box.place(x=250, y=150, anchor="center") # Binary Text Box
 
-        tk.Label(self, text="Text", font=self.sys20bu).place(x=250, y=250, anchor="center") # Text Result Box (Title)
+        tk.Label(self, text="ASCII Text", font=self.sys20bu).place(x=250, y=250, anchor="center") # Text Result Box (Title)
         self.text_box_result = tk.Text(self, height=5, width=50, state="disabled")
         self.text_box_result.place(x=250, y=350, anchor="center") # Text Result Box
 
@@ -67,14 +67,17 @@ class BinaryToText(Application): # Binary To Text Window
         binary_values = binary_text.split() # Get Individual Binary Values
 
         ascii_string = "" # Initialise ASCII Text String (for Output)
-
-        for value in binary_values:
-            ascii_string += chr(int(value, 2)) # Find the Chr for the Binary Value and Add to String
         
-        self.text_box_result.configure(state="normal") # Enable Text Box
-        self.text_box_result.delete("1.0", "end") # Reset Text Box
-        self.text_box_result.insert("1.0", ascii_string) # Insert Text Value
-        self.text_box_result.configure(state="disabled") # Disable Text Box
+        try:
+            for value in binary_values:
+                ascii_string += chr(int(value, 2)) # Find the Chr for the Binary Value and Add to String
+        except Exception as e:
+            ascii_string = f"ERROR ({e})"
+        finally:
+            self.text_box_result.configure(state="normal") # Enable Text Box
+            self.text_box_result.delete("1.0", "end") # Reset Text Box
+            self.text_box_result.insert("1.0", ascii_string) # Insert Text Value
+            self.text_box_result.configure(state="disabled") # Disable Text Box
 
 
 class TextToBinary(Application): # Text to Binary Window
@@ -84,7 +87,7 @@ class TextToBinary(Application): # Text to Binary Window
         self.geometry("500x500") # Window Size (AMENDED)
 
         # Window Contents
-        tk.Label(self, text="Text", font=self.sys20bu).place(x=250, y=50, anchor="center") # Text Text Box (Title)
+        tk.Label(self, text="ASCII Text", font=self.sys20bu).place(x=250, y=50, anchor="center") # Text Text Box (Title)
         self.text_box = tk.Text(self, height=5, width=50)
         self.text_box.place(x=250, y=150, anchor="center") # Text Text Box
 
@@ -100,14 +103,17 @@ class TextToBinary(Application): # Text to Binary Window
         text_input = self.text_box.get("1.0", "end") # Get Text Input
         binary_list = [f"{ord(i):08b}" for i in text_input] # Binary List (for Output)
         
-        for i in binary_list:
-            if i == "00001010": # If NEW LINE
-                del binary_list[binary_list.index(i)] # Delete NEW LINE
-
-        self.binary_result_box.configure(state="normal") # Enable Text Box
-        self.binary_result_box.delete("1.0", "end") # Reset Text Box
-        self.binary_result_box.insert("1.0", " ".join(binary_list)) # Insert Binary Values (joined)
-        self.binary_result_box.configure(state="disabled") # Disable Text Box
+        try:
+            for i in binary_list:
+                if i == "00001010": # If NEW LINE
+                    del binary_list[binary_list.index(i)] # Delete NEW LINE
+        except Exception as e:
+            binary_list = [f"ERROR ({e})"]
+        finally:
+            self.binary_result_box.configure(state="normal") # Enable Text Box
+            self.binary_result_box.delete("1.0", "end") # Reset Text Box
+            self.binary_result_box.insert("1.0", " ".join(binary_list)) # Insert Binary Values (joined)
+            self.binary_result_box.configure(state="disabled") # Disable Text Box
 
 
 class MainMenu(Application): # Main Menu
