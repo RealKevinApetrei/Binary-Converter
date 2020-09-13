@@ -1,6 +1,6 @@
 # DEVELOPER CONFIG (EDIT NOT RECOMMENDED)
 
-BUILD_VERSION = "v1.01.52-public"
+BUILD_VERSION = "v1.12.13-public"
 AUTHOR = "Kevin Apetrei"
 
 PROGRAM_NAME = "Binary Converter"

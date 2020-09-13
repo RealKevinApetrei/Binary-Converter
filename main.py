@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import font
+import re
 
 import config
 
@@ -11,6 +12,9 @@ class Application(tk.Tk): # Application Class Object
         self.title(f"{config.PROGRAM_NAME} | {config.BUILD_VERSION} | By {config.AUTHOR}") # Window Title
         self.geometry("500x250") # Window Size (Template)
         self.resizable(0, 0) # not Resizable
+
+        self.space_pattern = re.compile(r"00100000") # SPACE PATTERN
+        self.new_line_pattern = re.compile(r"00001010") # NEW LINE PATTERN
         
         # Fonts
         self.hel15b = font.Font(family="Helvetica", size=15, weight="bold") # Font (Helvetica, 15, Bold)
@@ -86,12 +90,22 @@ class TextToBinary(Application): # Text to Binary Window
 
         self.geometry("500x500") # Window Size (AMENDED)
 
+        # Variables
+        self.remove_spaces = tk.IntVar() # Remove Spaces (1/0)
+        self.remove_new_lines = tk.IntVar() # Remove New Lines (1/0)
+
         # Window Contents
-        tk.Label(self, text="ASCII Text", font=self.sys20bu).place(x=250, y=50, anchor="center") # Text Text Box (Title)
+        self.remove_spaces_check = tk.Checkbutton(self, text="Remove Spaces", variable=self.remove_spaces, onvalue=1, offvalue=0)
+        self.remove_spaces_check.place(x=25, y=25, anchor="nw") # Check Box Remove Spaces
+
+        self.remove_new_lines_check = tk.Checkbutton(self, text="Remove New Lines", variable=self.remove_new_lines, onvalue=1, offvalue=0)
+        self.remove_new_lines_check.place(x=25, y=50, anchor="nw") # Check Box Remove New Lines
+
+        tk.Label(self, text="ASCII Text", font=self.sys20bu).place(x=300, y=50, anchor="center") # Text Text Box (Title)
         self.text_box = tk.Text(self, height=5, width=50)
         self.text_box.place(x=250, y=150, anchor="center") # Text Text Box
 
-        tk.Label(self, text="Binary", font=self.sys20bu).place(x=250, y=250, anchor="center") # Binary Result Box (Title)
+        tk.Label(self, text="Binary", font=self.sys20bu).place(x=300, y=250, anchor="center") # Binary Result Box (Title)
         self.binary_result_box = tk.Text(self, height=5, width=50, state="disabled")
         self.binary_result_box.place(x=250, y=350, anchor="center") # Binary Result Box
 
@@ -101,12 +115,14 @@ class TextToBinary(Application): # Text to Binary Window
 
     def convert(self):
         text_input = self.text_box.get("1.0", "end") # Get Text Input
-        binary_list = [f"{ord(i):08b}" for i in text_input] # Binary List (for Output)
-        
+
         try:
-            for i in binary_list:
-                if i == "00001010": # If NEW LINE
-                    del binary_list[binary_list.index(i)] # Delete NEW LINE
+            binary_list = [f"{ord(i):08b}" for i in text_input] # Binary List (for Output)
+            
+            if self.remove_spaces.get() == 1:
+                binary_list = [i for i in binary_list if not self.space_pattern.match(i)] # Removed Spaces
+            if self.remove_new_lines.get() == 1:
+                binary_list = [i for i in binary_list if not self.new_line_pattern.match(i)] # Removed New Lines
         except Exception as e:
             binary_list = [f"ERROR ({e})"]
         finally:
