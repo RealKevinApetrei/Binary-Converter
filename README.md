@@ -5,7 +5,7 @@ This program is a Binary/ASCII converter.
 How to use
 ==========
 1. Download
-2. Run via Python3
+2. Run via Python3 or via executables
 3. Insert values in appropriate boxes
 
 Requirements
